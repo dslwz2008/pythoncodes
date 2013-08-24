@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CS 253 Blog</title>
+</head>
+
+<body>
+  <a href="/unit5/blog" class="main-title">
+    CS 253 Blog
+  </a>
+
+  <div class="login-area">
+    {% if user %}
+      {{user.name}} (<a class="login-link" href="/unit4/logout">logout</a>)
+    {% else %}
+      <a class="login-link" href="/unit5/blog/login">login</a>
+      |
+      <a class="login-link" href="/unit5/blog/signup">signup</a>
+    {% endif %}
+  </div>
+
+  <div id="content">
+  {% block content %}
+  {% endblock %}
+  </div>
+</body>
+
+</html>

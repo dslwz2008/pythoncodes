@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>JY-Gallery</title>
+    <script type="text/javascript" src="../static/jquery-1.9.1.min.js"></script>
+</head>
+
+<body>
+<input type="button" value="send request" id="sendReq">
+<script>
+    $(document).ready(function() {
+//        $('#sendReq').click(function() {
+//            sendGetRequest(ss, function(bStatus, oResult) {
+//                if(bStatus) {
+//                    alert(oResult);
+//                } else {
+//                    alert(oResult);
+//                }
+//            },{test : 'aa'})
+//        })
+        $.ajax({
+            type: "get",
+            url: "/ajaxtest",
+            data: { name: "John", location: "Boston" }
+        }).done(function( msg ) {
+                    alert( msg.a);
+                    alert(msg.b);
+                });
+    });
+
+    /**
+     * 发送ajax请求
+     * @param sUrl
+     * @param fnCallback
+     * @param oArgs
+     */
+    function sendGetRequest(sUrl, fnCallback, oArgs) {
+        $.ajax({
+            url : sUrl,
+            data : oArgs,
+            type : 'GET',
+
+            success: function(response) {
+                var bStatus = true;
+                if (_isFunction(fnCallback)) {
+                    fnCallback(bStatus, response);
+                }
+            },
+
+            error: function(oXHRequest, nTextStatus, oErrorThrownv) {
+                var bStatus = false;
+                if (_isFunction(fnCallback)) {
+                    fnCallback(bStatus, {error: '网络请求超时'});
+                }
+            }
+
+        })
+    }
+
+    /**
+     * 检查变量是否为函数
+     * @param fn
+     * @return {Boolean}
+     * @private
+     */
+    function _isFunction(fn) {
+        return !!fn && !fn.nodeName && fn.constructor != String &&
+                fn.constructor != RegExp && fn.constructor != Array &&
+                /function/i.test( fn + "" );
+    }
+</script>
+</body>
+</html>

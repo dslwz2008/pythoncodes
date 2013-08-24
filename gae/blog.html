@@ -1,0 +1,16 @@
+<html>
+<head>
+<title></title>
+</head>
+<body>
+<h1>Rubik's Blog</h1>
+<a href="/unit3/blog/newpost">new blog</a>
+<hr>
+{% for blog in blogs %}
+<div>
+<h2>{{ blog.title }}</h2>
+<p>{{ blog.body }}</p>
+</div>
+{% endfor %}
+</body>
+</html>

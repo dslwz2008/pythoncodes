@@ -1,0 +1,21 @@
+<html>
+<head>
+<title></title>
+</head>
+<body>
+<h1>Rubik's Blog</h1>
+<hr>
+<h2>New Post</h2>
+<form method="post">
+<p>Title:<input type="text" name="subject" value={{ subject }}></p>
+<p>Content:<textarea name="content" rows="4" cols="50">{{ content }}
+</textarea></p>
+<input type="submit">
+</form>
+<div>
+{% if errors %}
+<h3>{{ errors }}</h3>
+{% endif %}
+</div>
+</body>
+</html>

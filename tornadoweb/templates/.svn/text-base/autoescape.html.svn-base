@@ -1,0 +1,15 @@
+<html>
+<head></head>
+<body>
+<form action="autoescape" method="post">
+input words:<br/>
+<textarea name="words" rows="3" cols="20">
+</textarea><br/>
+<input type="submit" value="Submit" />
+</form>
+{% autoescape None %}
+{% set test = "<script>alert('asdasdas');</script>"%}
+{{ test }}
+{% raw test %}
+</body>
+</html>
