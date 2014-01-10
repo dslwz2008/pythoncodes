@@ -1,2 +1,4 @@
-algorithms/.idea
+.idea
+.DS_Store
+*.pyc
 
