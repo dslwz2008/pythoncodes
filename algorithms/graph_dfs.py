@@ -15,14 +15,17 @@ def genLegalMoves(x, y, bdSize):
             newMoves.append((newX, newY))
     return newMoves
 
+
 def legalCoord(x, bdSize):
     if 0 <= x < bdSize:
         return True
     else:
         return False
 
+
 def posToNodeId(row, col, bdSize):
     return (row - 1) * bdSize + (col - 1)
+
 
 def knightGraph(bdSize):
     ktGraph = Graph()
