@@ -2,6 +2,8 @@
 __author__ = 'shenshen'
 
 from node import Node, DoublyLinkedNode
+import copy
+
 
 class DoublyLinkedList(object):
     def __init__(self):
@@ -384,7 +386,23 @@ class OrderedList(object):
             current = current.getNext()
         return result
 
+
+def moveToFront(num):
+    data = []
+    for _ in range(num):
+        data.append(raw_input())
+
+    ul = UnorderedList()
+    for d in data:
+        if ul.search(d):
+            ul.remove(d)
+        ul.add(d)
+
+    print(ul.toList())
+
+
 def test():
+    # moveToFront(5)
     #temp = Node(11)
     #print temp.getData()
     #print temp.getNext()
@@ -396,8 +414,15 @@ def test():
     testlist.pushTail(1)
     testlist.pushTail(56)
     testlist.delete(78)
-    print(testlist.popHead().getData())
-    print(testlist.popTail().getData())
+    # print(testlist.popHead().getData())
+    # print(testlist.popTail().getData())
+    print(testlist.toList())
+    # another = copy.copy(testlist)
+    another = copy.deepcopy(testlist)
+    testlist.popTail()
+    print(testlist.toList())
+    print(another.toList())
+
 
     #print(testlist.length())
     #print(testlist.search(1))
@@ -406,7 +431,6 @@ def test():
     # testlist.append(12)
     # testlist.add(21)
     #print(testlist.length())
-    print(testlist.toList())
 
 if __name__ == '__main__':
     test()
