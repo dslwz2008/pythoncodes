@@ -4,6 +4,8 @@ __author__ = 'shenshen'
 import turtle
 import random
 import timeit
+import os
+import os.path
 
 #recursion practices
 #1.Write a recursive function to compute the factorial of a number.
@@ -110,7 +112,20 @@ def drawHilbert(level):
 # There is a pump that can be used to fill the jugs with water.
 # How can you get exactly two gallons of water in the 4-gallon jug?
 
+
+def listDirectory(dir, indent):
+    lists = os.listdir(dir)
+    for i in lists:
+        filename = dir + '/' + i
+        if os.path.isfile(filename):
+            print('%s%s' % (' '*indent, i))
+        elif os.path.isdir(filename):
+            print('%s%s/' % (' '*indent, i))
+            listDirectory(filename, indent + 4)
+
+
 if __name__ == '__main__':
+    listDirectory('/Users/shenshen/Pictures', 0)
     # print(fractorial(0))
     # print(fractorial(1))
     # print(fractorial(5))
@@ -122,4 +137,4 @@ if __name__ == '__main__':
     # print(fibonacci_rec(10))
     # print(fibonacci_ite(5))
     # print(fibonacci_ite(10))
-    hanoi(3, 'A', 'C', 'B')
+    # hanoi(3, 'A', 'C', 'B')

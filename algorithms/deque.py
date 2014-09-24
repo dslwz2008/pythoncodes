@@ -1,6 +1,36 @@
 #-*-coding:utf-8-*-
 __author__ = 'shenshen'
 
+from lists import DoublyLinkedList
+
+
+class DequeL(object):
+    def __init__(self):
+        self.list = DoublyLinkedList()
+        self.number = 0
+
+    def size(self):
+        return self.number
+
+    def isEmpty(self):
+        return self.number == 0
+
+    def pushLeft(self, data):
+        self.list.pushHead(data)
+        self.number += 1
+
+    def pushRight(self, data):
+        self.list.pushTail(data)
+        self.number += 1
+
+    def popLeft(self):
+        self.number -= 1
+        return self.list.popHead()
+
+    def popRight(self):
+        self.number -= 1
+        return self.list.popTail()
+
 
 class Deque:
     def __init__(self):

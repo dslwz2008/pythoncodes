@@ -1,35 +1,77 @@
 #-*-coding:utf-8-*-
 __author__ = 'shenshen'
 
-def binarySearch(alist, item):
-    first = 0
-    last = len(alist)-1
-    found = False
+import copy
 
-    while first<=last and not found:
-        midpoint = (first + last)//2
-        if alist[midpoint] == item:
-            found = True
-        else:
-            if item < alist[midpoint]:
-                last = midpoint-1
+
+class StaticSETofInts(object):
+    def __init__(self, keys):
+        self.items = copy.deepcopy(keys)
+        self.items.sort()
+
+    def contains(self, key):
+        return self.rank(key) != -1
+
+    def rank(self, key):
+        lo = 0
+        hi = len(self.items) - 1
+        while lo <= hi:
+            mid = (lo + hi) / 2
+            if key < self.items[mid]:
+                hi = mid - 1
+            elif key > self.items[mid]:
+                lo = mid + 1
             else:
-                first = midpoint+1
+                return mid
+        return -1
 
-    return found
+    def howmany(self):
+        pass
+
+
+def binarySearch(alist, key):
+    lo = 0
+    hi = len(alist) - 1
+    while lo <= hi:
+        mid = (lo + hi) / 2
+        if key < alist[mid]:
+            hi = mid - 1
+        elif key > alist[mid]:
+            lo = mid + 1
+        else:
+            return mid
+    return -1
+
+#     first = 0
+#     last = len(alist) - 1
+#     found = False
+#
+#     while first <= last and not found:
+#         midpoint = (first + last)//2
+#         if alist[midpoint] == item:
+#             found = True
+#         else:
+#             if item < alist[midpoint]:
+#                 last = midpoint - 1
+#             else:
+#                 first = midpoint + 1
+#
+#     return found
+
 
 def binarySearchRecursion(alist, item):
     if len(alist) == 0:
         return False
     else:
         midpoint = len(alist)//2
-        if alist[midpoint]==item:
-          return True
+        if alist[midpoint] == item:
+            return True
         else:
-          if item<alist[midpoint]:
-            return binarySearchRecursion(alist[:midpoint],item)
-          else:
-            return binarySearchRecursion(alist[midpoint+1:],item)
+            if item<alist[midpoint]:
+                return binarySearchRecursion(alist[:midpoint],item)
+            else:
+                return binarySearchRecursion(alist[midpoint+1:],item)
+
 
 if __name__ == '__main__':
     testlist1 = [0, 1, 2, 8, 13, 17, 19, 32, 42,]

@@ -1,22 +1,118 @@
 #-*-coding:utf-8-*-
 __author__ = 'shenshen'
 
-class Node(object):
-    def __init__(self, initdata):
-        self.data = initdata
-        self.next = None
+from node import Node, DoublyLinkedNode
+import copy
 
-    def getData(self):
-        return self.data
 
-    def getNext(self):
-        return self.next
+class DoublyLinkedList(object):
+    def __init__(self):
+        self.first = None
+        self.last = None
 
-    def setData(self, newdata):
-        self.data = newdata
+    def isEmpty(self):
+        return self.first is None
 
-    def setNext(self, newnext):
-        self.next = newnext
+    def pushHead(self, data):
+        node = DoublyLinkedNode(data)
+        if self.isEmpty():
+            self.first = node
+            self.last = node
+        else:
+            oldfirst = self.first
+            node.next = oldfirst
+            oldfirst.prev = node
+            self.first = node
+
+    def pushTail(self, data):
+        node = DoublyLinkedNode(data)
+        if self.isEmpty():
+            self.first = node
+            self.last = node
+        else:
+            oldlast = self.last
+            oldlast.next = node
+            node.prev = oldlast
+            self.last = node
+
+    def popHead(self):
+        if self.isEmpty():
+            return None
+        poped = self.first
+        self.first = self.first.next
+        self.first.prev = None
+        return poped
+
+    def popTail(self):
+        if self.isEmpty():
+            return None
+        poped = self.last
+        self.last = self.last.prev
+        self.last.next = None
+        return poped
+
+    def insertBefore(self, data, before):
+        current = self.first
+        found = False
+        while current is not None and not found:
+            if current.getData() == before:
+                found = True
+            else:
+                current = current.next
+        if found:
+            if current == self.first:
+                self.pushHead(data)
+            else:
+                node = DoublyLinkedNode(data)
+                prev = current.prev
+                prev.next = node
+                current.prev = node
+                node.prev = prev
+                node.next = current
+        return found
+
+    def insertAfter(self, data, after):
+        current = self.first
+        found = False
+        while current is not None and not found:
+            if current.getData() == after:
+                found = True
+            else:
+                current = current.next
+        if found:
+            if current == self.last:
+                self.pushTail(data)
+            else:
+                node = DoublyLinkedNode(data)
+                nextnode = current.next
+                current.next = node
+                nextnode.prev = node
+                node.prev = current
+                node.next = nextnode
+        return found
+
+    def delete(self, data):
+        current = self.first
+        found = False
+        while current is not None and not found:
+            if current.getData() == data:
+                found = True
+            else:
+                current = current.getNext()
+        if found:
+            prevnode = current.prev
+            nextnode = current.next
+            prevnode.next = nextnode
+            nextnode.prev = prevnode
+
+    def toList(self):
+        result = []
+        current = self.first
+        while current is not None:
+            result.append(current.getData())
+            current = current.getNext()
+        return result
+
 
 class UnorderedList(object):
     def __init__(self):
@@ -170,6 +266,7 @@ class UnorderedList(object):
             current = current.getNext()
         return result
 
+
 class OrderedList(object):
     def __init__(self):
         """creates a new ordered list that is empty"""
@@ -289,23 +386,51 @@ class OrderedList(object):
             current = current.getNext()
         return result
 
+
+def moveToFront(num):
+    data = []
+    for _ in range(num):
+        data.append(raw_input())
+
+    ul = UnorderedList()
+    for d in data:
+        if ul.search(d):
+            ul.remove(d)
+        ul.add(d)
+
+    print(ul.toList())
+
+
 def test():
+    # moveToFront(5)
     #temp = Node(11)
     #print temp.getData()
     #print temp.getNext()
-    testlist = UnorderedList()
-    testlist.add(34)
-    testlist.add(78)
-    testlist.add(1)
-    testlist.add(56)
+    testlist = DoublyLinkedList()
+    testlist.pushHead(34)
+    testlist.pushHead(78)
+    testlist.insertAfter(25, 78)
+    testlist.insertBefore(36, 78)
+    testlist.pushTail(1)
+    testlist.pushTail(56)
+    testlist.delete(78)
+    # print(testlist.popHead().getData())
+    # print(testlist.popTail().getData())
+    print(testlist.toList())
+    # another = copy.copy(testlist)
+    another = copy.deepcopy(testlist)
+    testlist.popTail()
+    print(testlist.toList())
+    print(another.toList())
+
+
     #print(testlist.length())
     #print(testlist.search(1))
     #print(testlist.search(99))
-    testlist.remove(1)
-    testlist.append(12)
-    testlist.add(21)
+    # testlist.remove(1)
+    # testlist.append(12)
+    # testlist.add(21)
     #print(testlist.length())
-    print(testlist.toList())
 
 if __name__ == '__main__':
     test()

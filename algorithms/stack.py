@@ -1,6 +1,9 @@
 #-*-coding:utf-8-*-
 __author__ = 'shenshen'
 
+from node import Node
+
+
 class Stack(object):
     def __init__(self):
         self.items = []
@@ -20,8 +23,55 @@ class Stack(object):
     def size(self):
         return len(self.items)
 
+
+class StackL(object):
+    def __init__(self):
+        self.first = None
+        self.number = 0
+
+    def isEmpty(self):
+        return self.first is None
+
+    def size(self):
+        return self.number
+
+    def push(self, item):
+        oldfirst = self.first
+        self.first = Node(item)
+        self.first.next = oldfirst
+        self.number += 1
+
+    def pop(self):
+        data = self.first.data
+        self.first = self.first.next
+        self.number -= 1
+        return data
+
+    def peek(self):
+        if self.first is not None:
+            return self.first.data
+
+
+class IterableStack(Stack):
+    def __init__(self):
+        Stack.__init__(self)
+        self.index = -1
+
+    def __iter__(self):
+        self.index = len(self.items)
+        return self
+
+    def next(self):
+        self.index -= 1
+        if self.index >= 0:
+            return self.items[self.index]
+        else:
+            raise StopIteration
+
+
 def test():
-    s=Stack()
+    # s = StackL()
+    s = IterableStack()
     print(s.isEmpty())
     s.push(4)
     s.push('dog')
@@ -30,9 +80,11 @@ def test():
     print(s.size())
     print(s.isEmpty())
     s.push(8.4)
-    print(s.pop())
-    print(s.pop())
-    print(s.size())
+    for i in s:
+        print(i)
+    # print(s.pop())
+    # print(s.pop())
+    # print(s.size())
 
 def revstring(mystr):
     s = Stack()
@@ -133,8 +185,8 @@ def infixToPostfix(infixexpr):
                 topToken = opStack.pop()
         else:
             while (not opStack.isEmpty()) and \
-               (prec[opStack.peek()] >= prec[token]):
-                  postfixList.append(opStack.pop())
+                            prec[opStack.peek()] >= prec[token]:
+                    postfixList.append(opStack.pop())
             opStack.push(token)
 
     while not opStack.isEmpty():
@@ -165,8 +217,26 @@ def doMath(op, op1, op2):
     else:
         return op1 - op2
 
+
+def matchParenthesis(expr):
+    vals = StackL()
+    ops = StackL()
+    for c in expr:
+        if c in '123456789':
+            vals.push(c)
+        elif c in '+-*':
+            ops.push(c)
+        elif c in ')':
+            right = vals.pop()
+            left = vals.pop()
+            oper = ops.pop()
+            result = '(%s%s%s)' % (left, oper, right)
+            vals.push(result)
+    return vals.pop()
+
+
 if __name__ == '__main__':
-    #test()
+    test()
     #print testEqual(revstring('apple'),'elppa')
     #print testEqual(revstring('x'),'x')
     #print testEqual(revstring('1234567890'),'0987654321')
@@ -178,4 +248,5 @@ if __name__ == '__main__':
     # print(infixToPostfix("( A + B ) * C - ( D - E ) * ( F + G )"))
     # print(infixToPostfix("A + B * C / ( D - E )"))
     # print(postfixEval("4 5 6 * +"))
-    print(infixToPostfix("5 * 3 ^ ( 4 - 2 )"))
+    # print(infixToPostfix("5 * 3 ^ ( 4 - 2 )"))
+    # print(matchParenthesis('1+2)*3-4)*5-6)))'))
