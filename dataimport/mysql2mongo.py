@@ -1,15 +1,18 @@
-#coding:utf-8
-
-__author__ = 'shenshen'
+# -*-coding:utf-8-*-
+# Authoe: Shen Shen
+# Email: dslwz2002@163.com
+__author__ = 'Shen Shen'
 
 import threading
-import time
 import math
 import mysql.connector
+import pymongo
 import multiprocessing
 
 
-class CheckData(threading.Thread):
+SERVERADDR = '192.168.1.2'#127.0.0.1
+
+class Mysql2MongoThread(threading.Thread):
     def __init__(self, threadID, name, cphms):
         threading.Thread.__init__(self)
         self.threadID = threadID
@@ -18,31 +21,27 @@ class CheckData(threading.Thread):
 
     def run(self):
         print("Start " + self.name)
+        # connect to mysql
         cnx = mysql.connector.connect(user='root', password='root',
-                              host='127.0.0.1', database='traffic')
+                              host=SERVERADDR, database='traffic')
         cur_sel = cnx.cursor()
         cur_del = cnx.cursor()
 
+        # connect to mongodb
+        conn_mongo = pymongo.Connection("mongodb://" + SERVERADDR, safe=True)
+        db_mongo = conn_mongo.traffic_clean
+        taxi = db_mongo.taxi_gps
+
         for cphm in self.cphms:
-            if cphm != u"浙F86T13":
-                continue
-            sql_select = "select id,sj from taxi_gps where cphm = %s"
+            sql_select = "select zj,jd,wd,sd,fx,sj,gc,cphm from taxi_gps where cphm = %s"
             print(self.threadID, cphm)
             cur_sel.execute(sql_select, (cphm, ))
             sjlist = []
-            delete_ids = []
-            for (rid, sj) in cur_sel:
-                if sj not in sjlist:
-                    sjlist.append(sj)
-                else:
-                    delete_ids.append(rid)
+            for (zj,jd,wd,sd,fx,sj,gc,cphm) in cur_sel:
+                doc = {'zj' : int(zj), 'position' : [jd, wd], 'sd' : sd,
+                       'fx' : float(fx), 'gc' : gc, 'cphm' : cphm, 'sj' : sj}
+                taxi.insert(doc)
 
-            if len(delete_ids) != 0:
-                delete_sql = "delete from taxi_gps where id = %s" % \
-                             (' or id = '.join([str(i) for i in delete_ids]), )
-                print(delete_sql)
-                cur_del.execute(delete_sql)
-                cnx.commit()
 
         cur_sel.close()
         cur_del.close()
@@ -52,7 +51,7 @@ class CheckData(threading.Thread):
 
 def get_distinct_cphm():
     cnx = mysql.connector.connect(user='root', password='root',
-                              host='127.0.0.1', database='traffic')
+                              host=SERVERADDR, database='traffic')
     cur_sel = cnx.cursor()
     sql_select = "select DISTINCT cphm from taxi_gps"
     cur_sel.execute(sql_select)
@@ -74,8 +73,8 @@ def main():
         if i == cpus - 1:
             cphmlist = cphms[i*npt:]
         else:
-            cphmlist = cphms[i*npt:(i+1)*npt-1]
-        threads.append(CheckData(i, "Thread-" + str(i), cphmlist))
+            cphmlist = cphms[i*npt:(i+1)*npt]
+        threads.append(Mysql2MongoThread(i, "Thread-" + str(i), cphmlist))
 
     for t in threads:
         t.start()
